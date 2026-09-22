@@ -1,0 +1,88 @@
+:root {
+  /* sRGB compatibility palette for browsers without OKLCH support. */
+  --color-paper: #f7f9fc;
+  --color-paper-2: #f0f4f8;
+  --color-paper-3: #e5eaf0;
+  --color-surface: #fcfdff;
+  --color-ink: #101b28;
+  --color-ink-soft: #25313f;
+  --color-muted: #5f6a77;
+  --color-rule: #d2d8df;
+  --color-rule-strong: #9ea9b5;
+  --color-brand: #123e6a;
+  --color-accent: #3577ab;
+  --color-accent-ink: #f7f9fc;
+  --color-focus: #0080cc;
+  --color-flow: #3577ab;
+  --color-stable: #277676;
+  --color-transition: #ce9c20;
+  --color-failure: #bf534e;
+  --color-disabled: #8a939d;
+
+  --font-display: "Archivo", "Inter", "Helvetica Neue", ui-sans-serif, sans-serif;
+  --font-body: "Inter", "Helvetica Neue", ui-sans-serif, sans-serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.25rem;
+  --text-lg: 1.5625rem;
+  --text-xl: 1.9531rem;
+  --text-2xl: 2.4414rem;
+  --text-3xl: 3.0518rem;
+  --text-4xl: 3.8147rem;
+  --text-display: clamp(3.5rem, 10vw, 6.75rem);
+  --text-section: clamp(2.45rem, 6vw, 4.9rem);
+
+  --space-3xs: 0.125rem;
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  --space-4xl: 9rem;
+
+  --page-gutter: clamp(1rem, 4vw, 4rem);
+  --page-max: 80rem;
+  --rule-hair: 1px;
+  --rule-heavy: 3px;
+  --radius-control: 0.25rem;
+  --radius-media: 1.5rem;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+
+  --z-base: 1;
+  --z-raised: 10;
+  --z-sticky: 200;
+}
+
+@supports (color: oklch(50% 0.1 250)) {
+  :root {
+    --color-paper: oklch(98.2% 0.004 250);
+    --color-paper-2: oklch(96.4% 0.007 250);
+    --color-paper-3: oklch(93.5% 0.010 250);
+    --color-surface: oklch(99.4% 0.003 250);
+    --color-ink: oklch(22% 0.030 252);
+    --color-ink-soft: oklch(31% 0.030 252);
+    --color-muted: oklch(52% 0.025 252);
+    --color-rule: oklch(88% 0.012 250);
+    --color-rule-strong: oklch(73% 0.022 250);
+    --color-brand: oklch(36% 0.090 252);
+    --color-accent: oklch(55% 0.105 245);
+    --color-accent-ink: oklch(98.2% 0.004 250);
+    --color-focus: oklch(58% 0.150 245);
+    --color-flow: oklch(55% 0.105 245);
+    --color-stable: oklch(52% 0.075 195);
+    --color-transition: oklch(72% 0.140 84);
+    --color-failure: oklch(58% 0.140 25);
+    --color-disabled: oklch(66% 0.018 250);
+  }
+}

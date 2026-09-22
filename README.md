@@ -17,7 +17,7 @@ Push to the `main` branch. The workflow in `.github/workflows/pages.yml` deploys
 ## Customize before publication
 
 - Replace author and affiliation placeholders in `index.html`.
-- Replace the illustrative experiment values with reported results.
+- Replace the pending experiment fields with verified values from the paper.
 - Add the final paper, video, and project asset links.
-- Adjust colors and layout in `assets/styles.css`.
+- Adjust design tokens in `tokens.css` and component layout in `assets/styles.css`.
 - Update interactive demo data in `assets/main.js`.
