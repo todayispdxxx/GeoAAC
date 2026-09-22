@@ -14,9 +14,10 @@ Then open <http://localhost:8000>.
 
 Push to the `main` branch. The workflow in `.github/workflows/pages.yml` deploys the site automatically. In the repository settings, set **Pages → Source** to **GitHub Actions** if it is not selected already.
 
-## Customize
+## Customize before publication
 
-- Update project copy and links in `index.html`.
+- Replace author and affiliation placeholders in `index.html`.
+- Replace the illustrative experiment values with reported results.
+- Add the final paper, video, and project asset links.
 - Adjust colors and layout in `assets/styles.css`.
-- Add lightweight interactions in `assets/main.js`.
-- Replace the social preview image referenced by the metadata when a final project figure is available.
+- Update interactive demo data in `assets/main.js`.
