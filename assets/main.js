@@ -80,29 +80,45 @@ horizon.addEventListener('input', updateHorizon);
 updateHorizon();
 
 const resultData = {
-  libero: { groot: [61, 68, 79], pi: [65, 72, 83] },
-  robocasa: { groot: [43, 49, 61], pi: [48, 53, 66] },
-  'libero-pro': { groot: [37, 45, 58], pi: [41, 48, 63] }
+  libero: {
+    model: 'GR00T N1.5',
+    values: [94.7, 94.6, 95.5],
+    labels: ['Best fixed · h=8', 'MS', 'GeoAAC'],
+    note: 'Average success rate (%) on LIBERO with GR00T N1.5. GeoAAC reaches 95.5%.'
+  },
+  robocasa: {
+    model: 'GR00T N1.5',
+    values: [66.4, 71.1, 75.1],
+    labels: ['Best fixed · h=12', 'MS', 'GeoAAC'],
+    note: 'Average success rate (%) on RoboCasa365. GeoAAC leads the best fixed horizon by 8.7 points.'
+  },
+  'libero-pro': {
+    model: 'π0.5',
+    values: [30.9, 35.2, 36.2],
+    labels: ['Fixed · h=5', 'MS', 'GeoAAC'],
+    note: 'Average success rate (%) on LIBERO-Pro under position shifts. GeoAAC reaches 36.2%.'
+  }
 };
 let selectedDataset = 'libero';
-let selectedModel = 'groot';
 
 function updateResults() {
-  const values = resultData[selectedDataset][selectedModel];
+  const result = resultData[selectedDataset];
   document.querySelectorAll('.bar').forEach((bar, index) => {
-    bar.style.setProperty('--value', values[index]);
-    bar.querySelector('strong').textContent = values[index];
+    bar.style.setProperty('--value', result.values[index]);
+    bar.querySelector('strong').textContent = result.values[index].toFixed(1);
+    document.getElementById(`result-label-${index}`).textContent = result.labels[index];
   });
+  document.getElementById('result-model').textContent = result.model;
+  document.getElementById('results-note').textContent = result.note;
 }
 
 document.querySelectorAll('#dataset-control button').forEach((button) => button.addEventListener('click', () => {
   selectedDataset = button.dataset.dataset;
-  document.querySelectorAll('#dataset-control button').forEach((item) => item.classList.toggle('active', item === button));
-  updateResults();
-}));
-document.querySelectorAll('#model-control button').forEach((button) => button.addEventListener('click', () => {
-  selectedModel = button.dataset.model;
-  document.querySelectorAll('#model-control button').forEach((item) => item.classList.toggle('active', item === button));
+  document.querySelectorAll('#dataset-control button').forEach((item) => {
+    const isActive = item === button;
+    item.classList.toggle('active', isActive);
+    item.setAttribute('aria-pressed', String(isActive));
+  });
   updateResults();
 }));
 
@@ -125,4 +141,3 @@ bibtexButton.addEventListener('click', async () => {
 });
 
 document.getElementById('year').textContent = new Date().getFullYear();
-

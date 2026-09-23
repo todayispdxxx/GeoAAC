@@ -1,0 +1,25 @@
+{
+  "date": "2026-09-23",
+  "project": "GeoAAC academic project homepage",
+  "stack": "Vanilla HTML, CSS, and JavaScript for GitHub Pages",
+  "route": "Single-page index.html with anchored research sections",
+  "typography": {
+    "family": "Inter with Arial fallback",
+    "weights": [400, 500, 600, 700, 800]
+  },
+  "palette": {
+    "navy": "#1d3557",
+    "teal": "#2a9d8f",
+    "gold": "#e9c46a",
+    "coral": "#e76f51",
+    "ink": "#111827",
+    "paper": "#f6f8f9"
+  },
+  "motion": "CSS keyframes and IntersectionObserver; reduced-motion fallback present",
+  "constraints": [
+    "Preserve existing long-form academic page and all working anchors",
+    "Use square corners for rectangular components",
+    "Do not fabricate image, video, uncertainty, or significance data",
+    "Keep paper-reported percentages exact"
+  ]
+}

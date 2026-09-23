@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#ffffff" />
-    <meta name="description" content="GeoAAC — Geometry-Based Adaptive Action Chunking for Flow-based Vision-Language-Action Policies." />
+    <meta name="description" content="GeoAAC adapts action horizons from the geometry of Flow Matching denoising trajectories in vision-language-action policies." />
     <meta property="og:title" content="GeoAAC" />
-    <meta property="og:description" content="Geometry-Based Adaptive Action Chunking for Flow-based Vision-Language-Action Policies." />
+    <meta property="og:description" content="Geometry-Based Adaptive Action Chunking from Denoising Trajectories in VLA Policies." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://todayispdxxx.github.io/GeoAAC/" />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="assets/styles.css" />
     <script src="assets/main.js" defer></script>
-    <title>GeoAAC — Geometry-Based Adaptive Action Chunking</title>
+    <title>GeoAAC — Adaptive Action Chunking from Denoising Trajectories</title>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -22,7 +22,7 @@
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation"><span></span><span></span></button>
         <nav id="site-nav" aria-label="Primary navigation">
           <a href="#overview">Overview</a><a href="#motivation">Motivation</a><a href="#insight">Insight</a><a href="#method">Method</a><a href="#experiments">Experiments</a><a href="#robot">Robot</a>
-          <a class="quiet-link" href="#paper">Paper</a><a class="quiet-link" href="https://github.com/todayispdxxx/GeoAAC">Code ↗</a>
+          <a class="quiet-link" href="GeoAAC.pdf">Paper</a><a class="quiet-link" href="https://github.com/todayispdxxx/GeoAAC">Code ↗</a>
         </nav>
       </div>
     </header>
@@ -30,21 +30,21 @@
     <main id="main">
       <section class="hero" id="top">
         <div class="hero-copy reveal">
-          <p class="venue">ICRA 2027</p>
+          <p class="venue">ICRA 2027 Submission</p>
           <h1>GeoAAC</h1>
-          <p class="subtitle">Geometry-Based Adaptive Action Chunking<br />for Flow-based Vision-Language-Action Policies</p>
-          <p class="authors"><a href="#">Author One</a><sup>1</sup>&ensp;<a href="#">Author Two</a><sup>1</sup>&ensp;<a href="#">Author Three</a><sup>2</sup></p>
-          <p class="affiliations"><sup>1</sup>Affiliation One &nbsp;&nbsp; <sup>2</sup>Affiliation Two</p>
+          <p class="subtitle">Geometry-Based Adaptive Action Chunking<br />from Denoising Trajectories in VLA Policies</p>
+          <p class="authors">Xin Chen<sup>1</sup>&ensp; Sen Chen<sup>1</sup>&ensp; Yujuan Ding<sup>2</sup>&ensp; Jian Liu<sup>1</sup>&ensp; Guoqing Wang<sup>3</sup><br />Wei Ye<sup>1</sup>&ensp; Heng Tao Shen<sup>1</sup>&ensp; Yi Bin<sup>1,†</sup></p>
+          <p class="affiliations"><sup>1</sup>Tongji University &nbsp;&nbsp; <sup>2</sup>The Hong Kong Polytechnic University &nbsp;&nbsp; <sup>3</sup>University of Electronic Science and Technology of China<br />† Corresponding author</p>
           <div class="hero-actions">
-            <a class="button disabled" href="#paper" aria-label="Paper coming soon"><span class="button-icon">▤</span> Paper</a>
+            <a class="button" href="GeoAAC.pdf"><span class="button-icon">▤</span> Paper</a>
             <a class="button primary" href="https://github.com/todayispdxxx/GeoAAC"><span class="button-icon">⌘</span> Code</a>
-            <a class="button" href="#interactive"><span class="button-icon">▶</span> Video</a>
+            <a class="button" href="#interactive"><span class="button-icon">▶</span> Demo</a>
           </div>
-          <p class="hero-summary"><strong>GeoAAC</strong> enables VLA policies to adaptively determine action horizons using the geometry revealed by Flow Matching trajectories.</p>
+          <p class="hero-summary"><strong>GeoAAC</strong> uses prefix-wise geometry from a single Flow Matching generation to select an adaptive action horizon—without additional training.</p>
         </div>
 
         <figure class="hero-media reveal">
-          <div class="media-visual robot-scene" role="img" aria-label="Illustration of a robot manipulating laboratory objects">
+          <div class="media-visual robot-scene media-placeholder" data-placeholder="PROJECT VIDEO · COMING SOON" role="img" aria-label="Project video placeholder">
             <svg viewBox="0 0 1200 600" aria-hidden="true">
               <defs><linearGradient id="surface" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#f8fafc"/><stop offset="1" stop-color="#e8eef2"/></linearGradient></defs>
               <rect width="1200" height="600" fill="#f5f7f8"/><path d="M0 438h1200v162H0z" fill="url(#surface)"/><path d="M0 438h1200" stroke="#cad5dc"/>
@@ -55,18 +55,23 @@
             </svg>
             <span class="play-button" aria-hidden="true">▶</span>
           </div>
-          <figcaption>GeoAAC replans when geometry indicates uncertainty and commits when the action prefix is reliable.</figcaption>
+          <figcaption>GeoAAC selects shorter horizons for precision and feedback, while preserving longer horizons for continuous motion.</figcaption>
         </figure>
       </section>
 
       <section class="section intro" id="overview">
         <p class="section-index reveal">01 · Overview</p>
-        <div class="intro-grid reveal"><h2>Action horizons should<br />adapt to the task.</h2><p>Flow-based VLA policies typically execute fixed-length action chunks. GeoAAC reads geometric variation along the denoising trajectory to estimate which action prefix is reliable—without changing the policy backbone.</p></div>
+        <div class="intro-grid reveal"><h2>Action horizons should<br />adapt to the task.</h2><div class="intro-copy"><p>Fixed action horizons cannot accommodate changing requirements for continuity, precision, and closed-loop feedback. GeoAAC constructs a horizon-wise geometric profile from prefix-wise denoising trajectories and selects an execution boundary from its cumulative relative growth.</p><p>The method operates on a single Flow Matching generation, requires no additional training, and consistently improves over fixed-horizon and existing adaptive baselines across LIBERO, LIBERO-Pro, RoboCasa365, and real-world manipulation.</p></div></div>
+        <ol class="contribution-list reveal">
+          <li><span>01</span><div><strong>Process-level reliability</strong><p>Prefix-wise denoising geometry remains positively correlated with predictive uncertainty.</p></div></li>
+          <li><span>02</span><div><strong>Training-free adaptation</strong><p>Temporally corrected geometry yields an execution boundary from one Flow Matching generation.</p></div></li>
+          <li><span>03</span><div><strong>Consistent evaluation</strong><p>Two flow-based VLA policies are evaluated across simulation and real-robot manipulation.</p></div></li>
+        </ol>
         <div class="statement reveal"><span>Flow geometry</span><i>→</i><span>Reliability</span><i>→</i><span>Action horizon</span></div>
       </section>
 
       <section class="section" id="motivation">
-        <header class="section-header reveal"><p class="section-index">02 · Motivation</p><h2>Why Adaptive<br />Action Chunking?</h2><p>A single horizon cannot be optimal for every moment. Long chunks reduce feedback; short chunks interrupt smooth execution.</p></header>
+        <header class="section-header reveal"><p class="section-index">02 · Motivation</p><h2>Why Adaptive Action Chunking?</h2><p>Short horizons enable frequent correction but require more policy inference; long horizons preserve continuity at the cost of extended open-loop execution.</p></header>
         <div class="timeline-comparison reveal">
           <div class="timeline-row fixed"><div><span class="tag red">Fixed · long</span><h3>Less feedback</h3><p>A stale plan keeps executing after the scene changes.</p></div><div class="timeline"><span style="--w:92%"></span><b class="event e1">observe</b><b class="event e2">failure</b></div></div>
           <div class="timeline-row short"><div><span class="tag orange">Fixed · short</span><h3>Reduced continuity</h3><p>Frequent replanning can fragment a stable motion.</p></div><div class="timeline segmented"><span></span><span></span><span></span><span></span><span></span><b class="event e1">observe</b><b class="event e3">observe</b></div></div>
@@ -75,7 +80,7 @@
       </section>
 
       <section class="section insight-section" id="insight">
-        <header class="section-header reveal"><p class="section-index">03 · Key insight</p><h2>Flow Matching Reveals<br />Action Reliability</h2><p>The evolution of an action prefix across denoising steps provides a geometric signal: convergence suggests reliability; persistent variation calls for earlier feedback.</p></header>
+        <header class="section-header reveal"><p class="section-index">03 · Key insight</p><h2>Flow Matching Reveals Action Reliability</h2><p>Prefix-wise geometric variation remains positively correlated with predictive uncertainty, making denoising geometry a process-level reliability signal.</p></header>
         <div class="insight-figure reveal">
           <div class="denoising-panel">
             <div class="figure-title"><span>Denoising process</span><small>t = 1.0 → 0.0</small></div>
@@ -88,14 +93,14 @@
           </div>
           <div class="geometry-panel">
             <div class="figure-title"><span>Geometry evolution</span><small>prefix-wise variation</small></div>
-            <div class="geometry-case stable"><div class="mini-chart"><svg viewBox="0 0 320 100"><path class="axis" d="M10 86h300"/><path class="curve" d="M10 20c35 4 38 42 72 47s60 10 92 8 62 3 136 2"/></svg></div><div><span class="tag teal">Stable</span><h3>Reliable prefix</h3><p>Smooth convergence · low variation</p></div></div>
-            <div class="geometry-case unstable"><div class="mini-chart"><svg viewBox="0 0 320 100"><path class="axis" d="M10 86h300"/><path class="curve" d="M10 31c29 57 59-29 92 34s55-48 87 1 59-23 121-2"/></svg></div><div><span class="tag orange">Unstable</span><h3>Uncertain prefix</h3><p>Persistent change · high variation</p></div></div>
+            <div class="geometry-case stable"><div class="mini-chart"><svg viewBox="0 0 320 100" aria-hidden="true"><path class="axis" d="M10 86h300"/><path class="curve" d="M10 20c35 4 38 42 72 47s60 10 92 8 62 3 136 2"/></svg></div><div><span class="tag teal">Stable</span><h3>Reliable prefix</h3><p>Smooth convergence · low variation</p></div></div>
+            <div class="geometry-case unstable"><div class="mini-chart"><svg viewBox="0 0 320 100" aria-hidden="true"><path class="axis" d="M10 86h300"/><path class="curve" d="M10 31c29 57 59-29 92 34s55-48 87 1 59-23 121-2"/></svg></div><div><span class="tag orange">Unstable</span><h3>Uncertain prefix</h3><p>Persistent change · high variation</p></div></div>
           </div>
         </div>
       </section>
 
       <section class="section interactive-section" id="interactive">
-        <header class="section-header reveal"><p class="section-index">04 · Interactive demo</p><h2>Explore How GeoAAC<br />Selects Action Horizons</h2><p>Move the prefix length to inspect how accumulated geometric variation changes the reliability decision.</p></header>
+        <header class="section-header reveal"><p class="section-index">04 · Conceptual demo</p><h2>Explore How GeoAAC Selects Action Horizons</h2><p>This illustration explains the decision logic; it is not a reproduction of reported experimental measurements.</p></header>
         <div class="demo-shell reveal">
           <div class="demo-scene">
             <div class="demo-topline"><span>SIMULATION VIEW</span><span id="frame-label">EXECUTE 8 STEPS</span></div>
@@ -113,7 +118,7 @@
             <input id="horizon" type="range" min="2" max="16" value="8" step="1" aria-label="Action horizon" />
             <div class="range-labels"><span>2 · replan</span><span>16 · execute</span></div>
             <div class="metric-row"><div><small>Prefix length</small><strong id="prefix-value">8</strong><span>steps</span></div><div><small>Geometry score</small><strong id="geometry-value">0.39</strong><span>variation</span></div><div><small>Reliability</small><strong id="reliability-value" class="reliable">High</strong><span id="decision-value">commit</span></div></div>
-            <div class="geometry-chart"><div class="chart-label"><span>GEOMETRIC VARIATION</span><span>threshold 0.42</span></div><svg viewBox="0 0 560 190" preserveAspectRatio="none"><g class="chart-grid"><path d="M25 35h510M25 90h510M25 145h510"/></g><path class="threshold" d="M25 75h510"/><path class="area" d="M25 151 58 138 92 124 126 109 160 83 194 65 228 78 262 92 296 104 330 113 364 119 398 126 432 130 466 132 500 135 535 137V165H25Z"/><path class="score-curve" d="M25 151 58 138 92 124 126 109 160 83 194 65 228 78 262 92 296 104 330 113 364 119 398 126 432 130 466 132 500 135 535 137" pathLength="100"/><line id="chart-cursor" x1="244" y1="22" x2="244" y2="165"/><circle id="chart-point" cx="244" cy="87" r="7"/></svg></div>
+            <div class="geometry-chart"><div class="chart-label"><span>ILLUSTRATIVE GEOMETRIC VARIATION</span><span>conceptual boundary</span></div><svg viewBox="0 0 560 190" preserveAspectRatio="none" aria-hidden="true"><g class="chart-grid"><path d="M25 35h510M25 90h510M25 145h510"/></g><path class="threshold" d="M25 75h510"/><path class="area" d="M25 151 58 138 92 124 126 109 160 83 194 65 228 78 262 92 296 104 330 113 364 119 398 126 432 130 466 132 500 135 535 137V165H25Z"/><path class="score-curve" d="M25 151 58 138 92 124 126 109 160 83 194 65 228 78 262 92 296 104 330 113 364 119 398 126 432 130 466 132 500 135 535 137" pathLength="100"/><line id="chart-cursor" x1="244" y1="22" x2="244" y2="165"/><circle id="chart-point" cx="244" cy="87" r="7"/></svg></div>
             <div class="logic-strip"><span>Flow Matching geometry</span><i>→</i><span>Reliability estimation</span><i>→</i><strong>k = <b id="logic-k">8</b></strong></div>
           </div>
         </div>
@@ -122,47 +127,47 @@
       <section class="section" id="method">
         <header class="section-header reveal"><p class="section-index">05 · Method</p><h2>How GeoAAC Works</h2><p>A lightweight inference-time procedure turns denoising geometry into an adaptive execution decision.</p></header>
         <div class="method-flow reveal">
-          <div class="method-step"><span>01</span><svg viewBox="0 0 100 70"><rect x="18" y="15" width="64" height="40" rx="4"/><path d="m29 45 14-14 11 9 15-18"/></svg><h3>Flow-based VLA</h3><p>Predict an action chunk conditioned on visual-language context.</p></div><i>→</i>
-          <div class="method-step"><span>02</span><svg viewBox="0 0 100 70"><path d="M10 52c20-40 29 16 48-19s22 17 32-11M10 42c19-22 34 5 49-12s21 2 31-5"/></svg><h3>Denoising trajectory</h3><p>Retain intermediate actions along the Flow Matching path.</p></div><i>→</i>
-          <div class="method-step"><span>03</span><svg viewBox="0 0 100 70"><path d="M12 54h76M19 47l15-17 12 8 18-22 19 15"/><circle cx="19" cy="47" r="3"/><circle cx="46" cy="38" r="3"/><circle cx="83" cy="31" r="3"/></svg><h3>Prefix geometry</h3><p>Measure variation for every candidate action prefix.</p></div><i>→</i>
-          <div class="method-step"><span>04</span><svg viewBox="0 0 100 70"><path d="M13 47c17-30 26 18 41-10s24 10 34-17M13 53c25-8 48-7 75-13"/></svg><h3>Temporal correction</h3><p>Stabilize the signal across consecutive observations.</p></div><i>→</i>
-          <div class="method-step selected"><span>05</span><svg viewBox="0 0 100 70"><path d="M12 35h76M27 22v26M57 22v26M77 22v26"/><circle cx="57" cy="35" r="8"/></svg><h3>Adaptive horizon</h3><p>Execute the longest action prefix deemed reliable.</p></div>
+          <div class="method-step"><span>01</span><svg viewBox="0 0 100 70" aria-hidden="true"><rect x="18" y="15" width="64" height="40"/><path d="m29 45 14-14 11 9 15-18"/></svg><h3>Flow-based VLA</h3><p>Predict an action chunk conditioned on visual-language context.</p></div><i>→</i>
+          <div class="method-step"><span>02</span><svg viewBox="0 0 100 70" aria-hidden="true"><path d="M10 52c20-40 29 16 48-19s22 17 32-11M10 42c19-22 34 5 49-12s21 2 31-5"/></svg><h3>Denoising trajectory</h3><p>Retain intermediate actions along the Flow Matching path.</p></div><i>→</i>
+          <div class="method-step"><span>03</span><svg viewBox="0 0 100 70" aria-hidden="true"><path d="M12 54h76M19 47l15-17 12 8 18-22 19 15"/><circle cx="19" cy="47" r="3"/><circle cx="46" cy="38" r="3"/><circle cx="83" cy="31" r="3"/></svg><h3>Prefix geometry</h3><p>Measure variation for every candidate action prefix.</p></div><i>→</i>
+          <div class="method-step"><span>04</span><svg viewBox="0 0 100 70" aria-hidden="true"><path d="M13 47c17-30 26 18 41-10s24 10 34-17M13 53c25-8 48-7 75-13"/></svg><h3>Temporal correction</h3><p>Correct stage-wise differences across the denoising process.</p></div><i>→</i>
+          <div class="method-step selected"><span>05</span><svg viewBox="0 0 100 70" aria-hidden="true"><path d="M12 35h76M27 22v26M57 22v26M77 22v26"/><circle cx="57" cy="35" r="8"/></svg><h3>Adaptive horizon</h3><p>Select the median boundary of cumulative positive geometric growth.</p></div>
         </div>
       </section>
 
       <section class="section experiments-section" id="experiments">
-        <header class="section-header reveal"><p class="section-index">06 · Experiments</p><h2>Experimental Results</h2><p>Explore the planned comparison layout across simulation benchmarks and VLA backbones.</p></header>
+        <header class="section-header reveal"><p class="section-index">06 · Experiments</p><h2>Experimental Results</h2><p>GeoAAC is evaluated with GR00T N1.5 and π0.5 on three simulation benchmarks and three real-world manipulation tasks.</p></header>
         <div class="results-shell reveal">
-          <div class="results-toolbar"><div><span>Dataset</span><div class="segmented-control" id="dataset-control"><button class="active" data-dataset="libero">LIBERO</button><button data-dataset="robocasa">RoboCasa365</button><button data-dataset="libero-pro">LIBERO-Pro</button></div></div><div><span>Model</span><div class="segmented-control" id="model-control"><button class="active" data-model="groot">GR00T N1.5</button><button data-model="pi">π0.5</button></div></div><small class="preview-badge">Layout preview · replace with reported values</small></div>
-          <div class="bar-chart" id="bar-chart" aria-label="Illustrative success rate bar chart">
-            <div class="y-axis"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div>
-            <div class="bars"><div class="grid"><i></i><i></i><i></i><i></i><i></i></div><div class="bar-item"><div class="bar baseline" data-key="fixed-long" style="--value:61"><strong>61</strong></div><span>Fixed · 16</span></div><div class="bar-item"><div class="bar baseline" data-key="fixed-short" style="--value:68"><strong>68</strong></div><span>Fixed · 4</span></div><div class="bar-item"><div class="bar adaptive-bar" data-key="geoaac" style="--value:79"><strong>79</strong></div><span>GeoAAC</span></div></div>
+          <div class="results-toolbar"><div><span>Dataset</span><div class="segmented-control" id="dataset-control"><button class="active" type="button" data-dataset="libero" aria-pressed="true">LIBERO</button><button type="button" data-dataset="robocasa" aria-pressed="false">RoboCasa365</button><button type="button" data-dataset="libero-pro" aria-pressed="false">LIBERO-Pro</button></div></div><div class="reported-config"><span>Reported backbone</span><strong id="result-model">GR00T N1.5</strong></div><small class="preview-badge">Reported paper values</small></div>
+          <div class="bar-chart" id="bar-chart" aria-label="Reported success rate comparison">
+            <div class="y-axis"><span>100%</span><span>75%</span><span>50%</span><span>25%</span><span>0%</span></div>
+            <div class="bars"><div class="grid"><i></i><i></i><i></i><i></i><i></i></div><div class="bar-item"><div class="bar fixed-bar" style="--value:94.7"><strong>94.7</strong></div><span id="result-label-0">Best fixed · h=8</span></div><div class="bar-item"><div class="bar ms-bar" style="--value:94.6"><strong>94.6</strong></div><span id="result-label-1">MS</span></div><div class="bar-item"><div class="bar adaptive-bar" style="--value:95.5"><strong>95.5</strong></div><span id="result-label-2">GeoAAC</span></div></div>
           </div>
-          <p class="results-note">Success Rate (%) · Values shown are visual placeholders, not reported results.</p>
+          <p class="results-note" id="results-note" aria-live="polite">Average success rate (%) on LIBERO with GR00T N1.5. GeoAAC reaches 95.5%.</p>
         </div>
       </section>
 
       <section class="section" id="robot">
-        <header class="section-header reveal"><p class="section-index">07 · Real robot</p><h2>Real-world Deployment</h2><p>GeoAAC is evaluated on contact-rich and precision-sensitive tasks using a PiperX robot setup.</p></header>
-        <div class="robot-setup reveal"><div class="setup-illustration"><svg viewBox="0 0 640 360"><rect width="640" height="360" fill="#f1f4f5"/><path d="M0 277h640v83H0" fill="#dce4e8"/><g fill="none" stroke-linecap="round"><path d="M145 281 181 188 277 144 373 202" stroke="#1d3557" stroke-width="47"/><path d="M145 281 181 188 277 144 373 202" stroke="#fff" stroke-width="34"/><circle cx="181" cy="188" r="25" fill="#fff" stroke="#1d3557" stroke-width="7"/><circle cx="277" cy="144" r="24" fill="#fff" stroke="#1d3557" stroke-width="7"/><path d="m373 202 48 38m-6-4 28-18m-28 18 8 32" stroke="#1d3557" stroke-width="9"/></g><rect x="465" y="218" width="46" height="59" fill="#dce8e6" stroke="#2a9d8f" stroke-width="4"/></svg></div><div><span class="tag teal">Hardware</span><h3>PiperX manipulation setup</h3><p>Replace this schematic with the final robot setup photograph and add camera, control frequency, and task protocol details.</p><dl><div><dt>Robot</dt><dd>PiperX</dd></div><div><dt>Tasks</dt><dd>3 manipulation skills</dd></div><div><dt>Policy</dt><dd>Flow-based VLA</dd></div></dl></div></div>
+        <header class="section-header reveal"><p class="section-index">07 · Real robot</p><h2>Real-world Deployment</h2><p>Across three tasks, GeoAAC raises average success from 53.3% with Fixed-50 to 74.4% using the same policy checkpoint.</p></header>
+        <div class="robot-setup reveal"><div class="setup-illustration"><svg viewBox="0 0 640 360" role="img" aria-label="Simplified dual-arm robot hardware setup"><rect width="640" height="360" fill="#f1f4f5"/><path d="M0 277h640v83H0" fill="#dce4e8"/><g fill="none" stroke-linecap="round"><path d="M145 281 181 188 277 144 373 202" stroke="#1d3557" stroke-width="47"/><path d="M145 281 181 188 277 144 373 202" stroke="#fff" stroke-width="34"/><circle cx="181" cy="188" r="25" fill="#fff" stroke="#1d3557" stroke-width="7"/><circle cx="277" cy="144" r="24" fill="#fff" stroke="#1d3557" stroke-width="7"/><path d="m373 202 48 38m-6-4 28-18m-28 18 8 32" stroke="#1d3557" stroke-width="9"/></g><rect x="465" y="218" width="46" height="59" fill="#dce8e6" stroke="#2a9d8f" stroke-width="4"/></svg></div><div><span class="tag teal">Hardware</span><h3>Dual-arm PiperX platform</h3><p>Two PiperX arms and three Intel RealSense D435i cameras provide one third-person and two wrist-mounted views. The Qwen3-VL-2B-Instruct-based policy predicts 50-step chunks and controls the robot at 50 Hz.</p><dl><div><dt>Training data</dt><dd>50 demonstrations / task</dd></div><div><dt>Evaluation</dt><dd>30 trials / method / task</dd></div><div><dt>Total trials</dt><dd>180</dd></div></dl></div></div>
         <div class="task-gallery reveal">
-          <article class="task"><div class="task-thumb task-lamp"><span class="comparison-label">Fixed horizon <b>vs.</b> GeoAAC</span><svg viewBox="0 0 400 250"><path d="M0 195h400"/><path d="M165 193v-93h44v93m-52-93h60"/><circle cx="187" cy="138" r="10"/><path d="M43 191 76 110l95 20"/><circle cx="76" cy="110" r="21"/></svg><span class="play-small">▶</span></div><p><span>01</span>Alcohol Lamp</p></article>
-          <article class="task"><div class="task-thumb task-tube"><span class="comparison-label">Fixed horizon <b>vs.</b> GeoAAC</span><svg viewBox="0 0 400 250"><path d="M0 195h400"/><path d="M135 155c44-91 91 68 140-29"/><path d="M43 191 76 110l95 20"/><circle cx="76" cy="110" r="21"/></svg><span class="play-small">▶</span></div><p><span>02</span>Rubber Tube Disconnection</p></article>
-          <article class="task"><div class="task-thumb task-vial"><span class="comparison-label">Fixed horizon <b>vs.</b> GeoAAC</span><svg viewBox="0 0 400 250"><path d="M0 195h400"/><path d="M181 193v-91h39v91m-46-91h53m-48-18h43v18"/><path d="M43 191 76 110l95 20"/><circle cx="76" cy="110" r="21"/></svg><span class="play-small">▶</span></div><p><span>03</span>Test Tube Uncapping</p></article>
+          <article class="task"><div class="task-thumb task-lamp media-placeholder" data-placeholder="TASK VIDEO · 01" role="img" aria-label="Video placeholder for extinguishing an alcohol lamp"><svg viewBox="0 0 400 250" aria-hidden="true"><path d="M0 195h400"/><path d="M165 193v-93h44v93m-52-93h60"/><circle cx="187" cy="138" r="10"/><path d="M43 191 76 110l95 20"/><circle cx="76" cy="110" r="21"/></svg><span class="play-small" aria-hidden="true">▶</span></div><p><span>01</span>Extinguish the Alcohol Lamp</p><small class="task-result">Fixed-50 <b>16.7%</b><i>→</i> GeoAAC <strong>36.7%</strong></small></article>
+          <article class="task"><div class="task-thumb task-tube media-placeholder" data-placeholder="TASK VIDEO · 02" role="img" aria-label="Video placeholder for disconnecting a rubber tube"><svg viewBox="0 0 400 250" aria-hidden="true"><path d="M0 195h400"/><path d="M135 155c44-91 91 68 140-29"/><path d="M43 191 76 110l95 20"/><circle cx="76" cy="110" r="21"/></svg><span class="play-small" aria-hidden="true">▶</span></div><p><span>02</span>Disconnect the Rubber Tube</p><small class="task-result">Fixed-50 <b>76.7%</b><i>→</i> GeoAAC <strong>100.0%</strong></small></article>
+          <article class="task"><div class="task-thumb task-vial media-placeholder" data-placeholder="TASK VIDEO · 03" role="img" aria-label="Video placeholder for uncapping a test tube"><svg viewBox="0 0 400 250" aria-hidden="true"><path d="M0 195h400"/><path d="M181 193v-91h39v91m-46-91h53m-48-18h43v18"/><path d="M43 191 76 110l95 20"/><circle cx="76" cy="110" r="21"/></svg><span class="play-small" aria-hidden="true">▶</span></div><p><span>03</span>Uncap the Test Tube</p><small class="task-result">Fixed-50 <b>66.7%</b><i>→</i> GeoAAC <strong>86.7%</strong></small></article>
         </div>
       </section>
 
       <section class="final-section" id="paper">
-        <div class="final-inner reveal"><p class="section-index">GeoAAC · ICRA 2027</p><h2>Observe when needed.<br />Act while reliable.</h2><p class="final-quote">“GeoAAC enables VLA policies to decide not only what action to execute, but also when to observe and adapt.”</p><div class="final-links"><a class="disabled" href="#paper">Paper <span>Coming soon</span></a><a href="https://github.com/todayispdxxx/GeoAAC">Code <span>GitHub ↗</span></a><button id="bibtex-button" type="button">BibTeX <span>Copy citation</span></button></div>
+        <div class="final-inner reveal"><p class="section-index">GeoAAC · ICRA 2027 Submission</p><h2>Observe when needed.<br />Act while reliable.</h2><p class="final-quote">GeoAAC converts prefix-wise denoising geometry from one Flow Matching generation into an adaptive execution boundary, without additional training.</p><div class="final-links"><a href="GeoAAC.pdf">Paper <span>PDF ↗</span></a><a href="https://github.com/todayispdxxx/GeoAAC">Code <span>GitHub ↗</span></a><button id="bibtex-button" type="button">BibTeX <span>Copy citation</span></button></div>
           <pre id="bibtex" hidden>@inproceedings{geoaac2027,
-  title   = {GeoAAC: Geometry-Based Adaptive Action Chunking for Flow-based Vision-Language-Action Policies},
-  author  = {Author list to be added},
+  title   = {GeoAAC: Geometry-Based Adaptive Action Chunking from Denoising Trajectories in VLA Policies},
+  author  = {Xin Chen and Sen Chen and Yujuan Ding and Jian Liu and Guoqing Wang and Wei Ye and Heng Tao Shen and Yi Bin},
   booktitle = {IEEE International Conference on Robotics and Automation},
   year    = {2027}
 }</pre>
         </div>
       </section>
     </main>
-    <footer><a class="wordmark" href="#top">GeoAAC</a><p>Geometry-Based Adaptive Action Chunking</p><p>© <span id="year"></span> GeoAAC</p></footer>
+    <footer><a class="wordmark" href="#top">GeoAAC</a><p>Adaptive Action Chunking from Denoising Trajectories</p><p>© <span id="year"></span> GeoAAC</p></footer>
   </body>
 </html>

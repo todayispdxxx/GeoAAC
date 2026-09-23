@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-23",
+  "scope": "Reference-led refinement of an existing academic project homepage",
+  "macrostructure": "Long-form research document",
+  "primary_reference": "User reference image 2: editorial heading hierarchy, heavy sans typography, left accent rule",
+  "secondary_references": [
+    "User reference image 1: square scientific chart frame, restrained graph-paper texture, direct values",
+    "User reference image 3: wide media sequence with captions below each frame"
+  ],
+  "decisions": [
+    "Retained the existing GeoAAC color identity instead of copying another project's palette",
+    "Removed rounded rectangular styling while preserving circular play affordances",
+    "Used a zero-based 0–100 percent axis and no invented error bars",
+    "Kept media slots visibly empty until genuine project assets are supplied",
+    "Added paper-grounded contributions and visible real-robot result captions"
+  ]
+}
