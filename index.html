@@ -138,12 +138,19 @@
       <section class="section experiments-section" id="experiments">
         <header class="section-header reveal"><p class="section-index">06 · Experiments</p><h2>Experimental Results</h2><p>GeoAAC is evaluated with GR00T N1.5 and π0.5 on three simulation benchmarks and three real-world manipulation tasks.</p></header>
         <div class="results-shell reveal">
-          <div class="results-toolbar"><div><span>Dataset</span><div class="segmented-control" id="dataset-control"><button class="active" type="button" data-dataset="libero" aria-pressed="true">LIBERO</button><button type="button" data-dataset="robocasa" aria-pressed="false">RoboCasa365</button><button type="button" data-dataset="libero-pro" aria-pressed="false">LIBERO-Pro</button></div></div><div class="reported-config"><span>Reported backbone</span><strong id="result-model">GR00T N1.5</strong></div><small class="preview-badge">Reported paper values</small></div>
-          <div class="bar-chart" id="bar-chart" aria-label="Reported success rate comparison">
-            <div class="y-axis"><span>100%</span><span>75%</span><span>50%</span><span>25%</span><span>0%</span></div>
-            <div class="bars"><div class="grid"><i></i><i></i><i></i><i></i><i></i></div><div class="bar-item"><div class="bar fixed-bar" style="--value:94.7"><strong>94.7</strong></div><span id="result-label-0">Best fixed · h=8</span></div><div class="bar-item"><div class="bar ms-bar" style="--value:94.6"><strong>94.6</strong></div><span id="result-label-1">MS</span></div><div class="bar-item"><div class="bar adaptive-bar" style="--value:95.5"><strong>95.5</strong></div><span id="result-label-2">GeoAAC</span></div></div>
+          <div class="results-toolbar">
+            <div class="result-control"><span>Dataset</span><div class="segmented-control" id="dataset-control" aria-label="Select evaluation dataset"><button class="active" type="button" data-dataset="libero" aria-pressed="true">LIBERO</button><button type="button" data-dataset="robocasa" aria-pressed="false">RoboCasa365</button><button type="button" data-dataset="libero-pro" aria-pressed="false">LIBERO-Pro</button></div></div>
+            <div class="result-control"><span>Backbone</span><div class="segmented-control" id="model-control" aria-label="Select policy backbone"></div></div>
+            <label class="metric-control" for="result-metric"><span>Metric</span><select id="result-metric" aria-label="Select reported metric"></select></label>
+            <small class="preview-badge">Reported paper values</small>
           </div>
-          <p class="results-note" id="results-note" aria-live="polite">Average success rate (%) on LIBERO with GR00T N1.5. GeoAAC reaches 95.5%.</p>
+          <div class="results-key" aria-label="Method family legend"><span><i class="key-fixed"></i>Fixed horizon</span><span><i class="key-ms"></i>MS baseline</span><span><i class="key-sa"></i>SA baseline</span><span><i class="key-geoaac"></i>GeoAAC</span></div>
+          <div class="result-profile" id="bar-chart" aria-label="Interactive reported success-rate comparison">
+            <div class="result-axis" aria-hidden="true"><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div>
+            <div class="result-bars" id="result-bars" role="list"></div>
+          </div>
+          <div class="result-insight" aria-live="polite"><strong id="result-insight-title">LIBERO · Average success rate</strong><p class="results-note" id="results-note">Select a dataset, backbone, and metric to inspect every reported method.</p></div>
+          <details class="result-table"><summary>View full reported table</summary><div class="result-table-scroll"><table id="result-table"></table></div></details>
         </div>
       </section>
 

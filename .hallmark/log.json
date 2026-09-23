@@ -2,15 +2,18 @@
   "date": "2026-09-23",
   "scope": "Reference-led refinement of an existing academic project homepage",
   "macrostructure": "Long-form research document",
-  "primary_reference": "User reference image 2: editorial heading hierarchy, heavy sans typography, left accent rule",
+  "primary_reference": "User reference image 2 and Harness VLA source: Inter typography, editorial heading hierarchy, and generous academic spacing",
   "secondary_references": [
     "User reference image 1: square scientific chart frame, restrained graph-paper texture, direct values",
     "User reference image 3: wide media sequence with captions below each frame"
   ],
   "decisions": [
     "Retained the existing GeoAAC color identity instead of copying another project's palette",
+    "Switched body typography from Manrope to the reference site's Inter stack and enlarged the hero hierarchy",
+    "Removed the section-heading accent rule at the user's request",
     "Removed rounded rectangular styling while preserving circular play affordances",
-    "Used a zero-based 0–100 percent axis and no invented error bars",
+    "Rebuilt reported results as an interactive zero-based 0–100 percent horizontal profile with dataset, backbone, and metric controls",
+    "Included every paper-reported LIBERO, LIBERO-Pro, and RoboCasa365 value in an accessible expandable table, with no invented error bars",
     "Kept media slots visibly empty until genuine project assets are supplied",
     "Added paper-grounded contributions and visible real-robot result captions"
   ]
