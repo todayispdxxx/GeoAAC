@@ -13,15 +13,37 @@ nav.querySelectorAll('a').forEach((link) => link.addEventListener('click', () =>
   nav.classList.remove('open');
 }));
 
-const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      revealObserver.unobserve(entry.target);
-    }
+const scrollProgress = document.getElementById('scroll-progress');
+let progressFrame;
+function updateScrollProgress() {
+  const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
+  scrollProgress.style.transform = `scaleX(${progress})`;
+  progressFrame = null;
+}
+window.addEventListener('scroll', () => {
+  if (!progressFrame) progressFrame = window.requestAnimationFrame(updateScrollProgress);
+}, { passive: true });
+updateScrollProgress();
+
+const revealElements = [...document.querySelectorAll('.reveal')];
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if ('IntersectionObserver' in window && !reduceMotion) {
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  revealElements.forEach((element, index) => {
+    element.style.setProperty('--reveal-delay', `${(index % 2) * 70}ms`);
+    revealObserver.observe(element);
   });
-}, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach((element) => revealObserver.observe(element));
+} else {
+  revealElements.forEach((element) => element.classList.add('visible'));
+}
 
 const sections = [...document.querySelectorAll('main section[id]')];
 const navLinks = [...nav.querySelectorAll('a[href^="#"]')];
@@ -186,11 +208,18 @@ const modelControl = document.getElementById('model-control');
 const metricSelect = document.getElementById('result-metric');
 const resultBars = document.getElementById('result-bars');
 const resultTable = document.getElementById('result-table');
-const resultTitle = document.getElementById('result-insight-title');
-const resultsNote = document.getElementById('results-note');
+const resultProfile = document.getElementById('bar-chart');
+const resultTooltip = document.getElementById('result-tooltip');
+const resultTooltipTitle = document.getElementById('result-tooltip-title');
+const resultTooltipMetric = document.getElementById('result-tooltip-metric');
+const resultTooltipContext = document.getElementById('result-tooltip-context');
+const resultStatus = document.getElementById('result-status');
+const resultChartTitle = document.getElementById('result-chart-title');
 let selectedDataset = 'libero';
 let selectedModel = resultData.libero.defaultModel;
 let selectedMetric = resultData.libero.defaultMetric;
+let tooltipTimer;
+let tooltipOwner;
 
 function formatResult(value) {
   return Number.isInteger(value) ? value.toFixed(0) : value.toFixed(1);
@@ -203,12 +232,48 @@ function resultSummary(dataset, model, metric, methods) {
   const best = methods.reduce((leader, method) => method.values[metric.key] > leader.values[metric.key] ? method : leader);
   const value = geoaac.values[metric.key];
   const delta = value - bestFixed.values[metric.key];
-  resultTitle.textContent = `${dataset.label} · ${metric.label} success rate`;
   if (best.kind === 'geoaac') {
-    resultsNote.textContent = `With ${model.label}, GeoAAC reports ${formatResult(value)}% and improves on the best fixed horizon by ${formatResult(delta)} percentage points.`;
+    resultStatus.textContent = `${dataset.label}, ${metric.label}. With ${model.label}, GeoAAC reports ${formatResult(value)}% and improves on the best fixed horizon by ${formatResult(delta)} percentage points.`;
   } else {
-    resultsNote.textContent = `With ${model.label}, ${best.label} is highest on this metric at ${formatResult(best.values[metric.key])}%; GeoAAC reports ${formatResult(value)}%.`;
+    resultStatus.textContent = `${dataset.label}, ${metric.label}. With ${model.label}, ${best.label} is highest on this metric at ${formatResult(best.values[metric.key])}%; GeoAAC reports ${formatResult(value)}%.`;
   }
+}
+
+function positionResultTooltip(clientX, clientY) {
+  const profileRect = resultProfile.getBoundingClientRect();
+  const inset = 12;
+  let left = clientX - profileRect.left + 14;
+  let top = clientY - profileRect.top - resultTooltip.offsetHeight - 12;
+  if (left + resultTooltip.offsetWidth > profileRect.width - inset) {
+    left = clientX - profileRect.left - resultTooltip.offsetWidth - 14;
+  }
+  if (left < inset) left = inset;
+  if (top < inset) top = clientY - profileRect.top + 16;
+  if (top + resultTooltip.offsetHeight > profileRect.height - inset) {
+    top = profileRect.height - resultTooltip.offsetHeight - inset;
+  }
+  resultTooltip.style.left = `${left}px`;
+  resultTooltip.style.top = `${top}px`;
+}
+
+function showResultTooltip(row, dataset, model, metric, method, value) {
+  window.clearTimeout(tooltipTimer);
+  if (tooltipOwner && tooltipOwner !== row) tooltipOwner.removeAttribute('aria-describedby');
+  tooltipOwner = row;
+  row.setAttribute('aria-describedby', 'result-tooltip');
+  resultTooltipTitle.textContent = method.label;
+  resultTooltipMetric.textContent = `${metric.label} success rate · ${formatResult(value)}%`;
+  resultTooltipContext.textContent = `${dataset.label} · ${model.label}`;
+  resultTooltip.classList.add('visible');
+  resultTooltip.setAttribute('aria-hidden', 'false');
+}
+
+function hideResultTooltip() {
+  window.clearTimeout(tooltipTimer);
+  if (tooltipOwner) tooltipOwner.removeAttribute('aria-describedby');
+  tooltipOwner = null;
+  resultTooltip.classList.remove('visible');
+  resultTooltip.setAttribute('aria-hidden', 'true');
 }
 
 function renderTable(dataset, model) {
@@ -247,9 +312,9 @@ function renderBars() {
   const model = dataset.models[selectedModel];
   const metric = dataset.metrics.find((item) => item.key === selectedMetric);
   resultBars.replaceChildren();
+  hideResultTooltip();
   resultSummary(dataset, model, metric, model.methods);
-  const summaryTitle = resultTitle.textContent;
-  const summaryNote = resultsNote.textContent;
+  resultChartTitle.textContent = `${dataset.label} · ${model.label} · ${metric.label}`;
 
   model.methods.forEach((method, index) => {
     const value = method.values[metric.key];
@@ -274,18 +339,31 @@ function renderBars() {
     row.append(label, track, number);
     resultBars.appendChild(row);
 
-    const showDetail = () => {
-      resultTitle.textContent = method.label;
-      resultsNote.textContent = `${dataset.label} · ${model.label} · ${metric.label}: ${formatResult(value)}% success rate.`;
-    };
-    const restoreSummary = () => {
-      resultTitle.textContent = summaryTitle;
-      resultsNote.textContent = summaryNote;
-    };
-    row.addEventListener('mouseenter', showDetail);
-    row.addEventListener('mouseleave', restoreSummary);
-    row.addEventListener('focus', showDetail);
-    row.addEventListener('blur', restoreSummary);
+    let pointerX = 0;
+    let pointerY = 0;
+    row.addEventListener('mouseenter', (event) => {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      tooltipTimer = window.setTimeout(() => {
+        showResultTooltip(row, dataset, model, metric, method, value);
+        positionResultTooltip(pointerX, pointerY);
+      }, 800);
+    });
+    row.addEventListener('mousemove', (event) => {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      if (resultTooltip.classList.contains('visible')) positionResultTooltip(pointerX, pointerY);
+    });
+    row.addEventListener('mouseleave', hideResultTooltip);
+    row.addEventListener('focus', () => {
+      showResultTooltip(row, dataset, model, metric, method, value);
+      const trackRect = track.getBoundingClientRect();
+      positionResultTooltip(trackRect.left + trackRect.width * value / 100, trackRect.top);
+    });
+    row.addEventListener('blur', hideResultTooltip);
+    row.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') hideResultTooltip();
+    });
   });
 }
 

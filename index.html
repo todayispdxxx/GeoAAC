@@ -11,12 +11,14 @@
     <meta property="og:url" content="https://todayispdxxx.github.io/GeoAAC/" />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="assets/styles.css" />
+    <script>document.documentElement.classList.add('js');</script>
     <script src="assets/main.js" defer></script>
     <title>GeoAAC — Adaptive Action Chunking from Denoising Trajectories</title>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
+      <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
       <div class="nav-inner">
         <a class="wordmark" href="#top" aria-label="GeoAAC home">GeoAAC</a>
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation"><span></span><span></span></button>
@@ -146,10 +148,12 @@
           </div>
           <div class="results-key" aria-label="Method family legend"><span><i class="key-fixed"></i>Fixed horizon</span><span><i class="key-ms"></i>MS baseline</span><span><i class="key-sa"></i>SA baseline</span><span><i class="key-geoaac"></i>GeoAAC</span></div>
           <div class="result-profile" id="bar-chart" aria-label="Interactive reported success-rate comparison">
+            <div class="result-chart-head"><strong id="result-chart-title">LIBERO · GR00T N1.5 · Average</strong><span>Success rate (%) · Hover or focus a row for details</span></div>
             <div class="result-axis" aria-hidden="true"><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div>
             <div class="result-bars" id="result-bars" role="list"></div>
+            <div class="result-tooltip" id="result-tooltip" role="tooltip" aria-hidden="true"><strong id="result-tooltip-title">GeoAAC</strong><span id="result-tooltip-metric">Average success rate · 95.5%</span><small id="result-tooltip-context">LIBERO · GR00T N1.5</small></div>
           </div>
-          <div class="result-insight" aria-live="polite"><strong id="result-insight-title">LIBERO · Average success rate</strong><p class="results-note" id="results-note">Select a dataset, backbone, and metric to inspect every reported method.</p></div>
+          <p class="sr-only" id="result-status" aria-live="polite"></p>
           <details class="result-table"><summary>View full reported table</summary><div class="result-table-scroll"><table id="result-table"></table></div></details>
         </div>
       </section>
